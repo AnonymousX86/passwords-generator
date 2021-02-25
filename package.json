@@ -2,6 +2,7 @@
   "name": "passwords-generator",
   "version": "0.1.0",
   "private": true,
+  "homepage": "/passwords-generator/",
   "scripts": {
     "dev": "nuxt",
     "build": "nuxt build",
