@@ -1,5 +1,5 @@
 <template>
-  <b-row>
+  <b-row class="my-4">
     <b-col>
       <header>
         <h1>Passwords generator</h1>
@@ -9,74 +9,65 @@
       <main>
         <b-row>
           <b-col cols="5">
-            <form>
-              <b-row>
-                <b-col cols="6">
-                  <label for="pass_len">Password length</label>
-                </b-col>
-                <b-col cols="6">
-                  <input
-                    id="pass_len"
-                    v-model="options.length_"
-                    type="number"
-                    min="4"
-                    max="60"
-                  />
-                </b-col>
-              </b-row>
+            <b-form-group label="Password length test">
+              <b-form-input
+                v-model.number="options.length_"
+                type="number"
+                min="4"
+                max="60"
+                required
+              />
+            </b-form-group>
 
-              <b-row>
-                <b-col cols="6">
-                  <label for="pass_upper">Uppercase letters</label>
-                </b-col>
-                <b-col cols="6">
-                  <input
-                    id="pass_upper"
-                    v-model="options.upper"
-                    type="checkbox"
-                  />
-                </b-col>
-              </b-row>
+            <b-form-group label="Use uppercase letters">
+              <input v-model="options.upper" type="checkbox" />
+              <span>
+                {{ options.upper ? 'Yes' : 'No' }}
+              </span>
+            </b-form-group>
 
-              <b-row>
-                <b-col cols="6">
-                  <label for="pass_nums">Numbers</label>
-                </b-col>
-                <b-col cols="6">
-                  <input
-                    id="pass_nums"
-                    v-model="options.nums"
-                    type="checkbox"
-                  />
-                </b-col>
-              </b-row>
+            <b-form-group label="Use numbers">
+              <input v-model="options.nums" type="checkbox" />
+              <span>
+                {{ options.nums ? 'Yes' : 'No' }}
+              </span>
+            </b-form-group>
 
-              <b-row>
-                <b-col cols="6">
-                  <label for="pass_special">Special characters</label>
-                </b-col>
-                <b-col cols="6">
-                  <input
-                    id="pass_special"
-                    v-model="options.special"
-                    type="checkbox"
-                  />
-                </b-col>
-              </b-row>
+            <b-form-group label="Use special characters">
+              <input
+                id="pass_special"
+                v-model="options.special"
+                type="checkbox"
+              />
+              <span>
+                {{ options.special ? 'Yes' : 'No' }}
+              </span>
+            </b-form-group>
 
-              <hr />
+            <hr />
 
-              <b-row class="mb-2">
-                <b-col cols="6">
-                  <b-button @click="randomPassword">Randomize</b-button>
-                </b-col>
-                <b-col cols="6">
-                  <label>
-                    <input v-model="password" type="text" readonly />
-                  </label>
-                </b-col>
-              </b-row>
-            </form>
+            <b-row class="mb-2">
+              <b-col cols="6">
+                <b-button
+                  variant="primary"
+                  class="w-100"
+                  @click="randomPassword"
+                >
+                  Randomize
+                </b-button>
+              </b-col>
+              <b-col cols="6">
+                <b-form-group
+                  :description="
+                    password === ' '
+                      ? 'Here will be displayed generated password.'
+                      : 'See? Great!'
+                  "
+                >
+                  <b-form-input v-model="password" type="text" readonly />
+                </b-form-group>
+              </b-col>
+            </b-row>
           </b-col>
         </b-row>
       </main>
