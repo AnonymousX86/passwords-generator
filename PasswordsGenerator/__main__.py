@@ -1,48 +1,43 @@
 # -*- coding: utf-8 -*-
-from random import choice
-
 from rich.console import Console
+
+from PasswordsGenerator.config import create_config
+from PasswordsGenerator.passwords_process import generate, save_to_file, ask_for_saving
 
 if __name__ == '__main__':
     console = Console()
     console.rule('Passwords Generator')
 
-    LOWER = [*'abcdefghijklmnopqrstuvwxyz']
-    UPPER = [x.upper() for x in LOWER]
-    NUMBERS = [*'0123456789']
-    SPECIALS = [*'!@#$%^&*()-_=+[]{};:,.<>?']
+    config = create_config(console)
 
-    QUANTITY = int(console.input(':1234: Quantity: '))
-    LENGTH = int(console.input(':straight_ruler: Length: '))
-    CONFIG = dict(
-        lower=True,
-        upper=True,
-        numbers=True,
-        specials=True
-    )
-
-    source = []
-    if CONFIG['lower']:
-        source += LOWER
-    if CONFIG['upper']:
-        source += UPPER
-    if CONFIG['numbers']:
-        source += NUMBERS
-    if CONFIG['specials']:
-        source += SPECIALS
-
-    passwords = []
-
-    if source:
-        for _ in range(QUANTITY):
-            phrase = ''
-            for _ in range(LENGTH):
-                phrase += choice(source)
-            passwords.append(phrase)
-
-    if passwords:
-        console.print(':closed_lock_with_key: Your passwords:')
-        for password in passwords:
-            console.print(u' [bold]\u00b7[/] [white]{}'.format(password))
+    passwords = generate(config)
+    if isinstance(passwords, RuntimeError):
+        console.print(':x: Wrong config - no passwords to show.')
+    elif not passwords:
+        console.print(':x: Something bad happened - no passwords to show.')
     else:
-        console.print('Wrong config - no passwords to show.')
+        console.print(':locked_with_key: Your passwords:')
+        for password in passwords:
+            console.print(u' [bold]\u00b7[/bold] [white]{}'.format(password))
+
+        should_save_to_file, file_name = ask_for_saving(console)
+        if should_save_to_file:
+            try:
+                with open(file_name, 'x') as _:
+                    pass
+            except FileExistsError:
+                pass
+            try:
+                save_to_file(file_name, passwords)
+            except PermissionError:
+                console.print(':x: Permission denied.')
+            else:
+                console.print(f':white_check_mark: Your passwords saved to file: [bold italic]{file_name}[/].')
+
+    console.print(':wave: Bye!')
+    console.print(':man_technologist: I was made by [italic]Jakub Suchenek[/]')
+    console.print(
+        ':link: Check out my GitHub: [link=https://github.com/AnonymousX86/passwords-generator]'
+        'https://github.com/AnonymousX86/passwords-generator[/]'
+    )
+    console.print('')
